@@ -19,10 +19,11 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4
-        working-directory: ./mini-app
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: './mini-app/package-lock.json'
+          working-directory: ./mini-app
 
       - name: Install dependencies
         working-directory: ./mini-app
