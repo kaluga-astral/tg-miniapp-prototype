@@ -19,6 +19,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4
+        working-directory: ./mini-app
         with:
           node-version: 22
           cache: npm
