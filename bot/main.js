@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import { Telegraf } from 'telegraf';
 
 // Создаем экземпляр бота
-const bot = new Telegraf('7560641741:AAHHSQb677dpihj6W4TP1uKkNS1oG2fIe6M');
+const bot = new Telegraf('');
 
 const filePath = './users.json';
 
