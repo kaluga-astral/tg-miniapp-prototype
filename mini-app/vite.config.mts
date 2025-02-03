@@ -20,6 +20,7 @@ const isSentryEnabled = process.env.PUBLIC_IS_SENTRY_ENABLED === 'true';
 const version = process.env.PUBLIC_VERSION;
 
 export default defineConfig({
+  base: '/tg-miniapp-prototype/',
   plugins: [
     splitVendorChunkPlugin(),
     react(),
