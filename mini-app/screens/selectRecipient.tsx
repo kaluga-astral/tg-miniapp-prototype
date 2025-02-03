@@ -24,7 +24,7 @@ const {
     first_name: string;
     last_name: string;
   }>;
-  fileData: { id: string; fileName: string };
+  fileData: { fileUrl: string; fileName: string };
 } = JSON.parse(params.get('data') || '{}');
 
 let valueG;
@@ -40,6 +40,8 @@ export const SelectRecipient = () => {
     window.Telegram.WebApp.sendData(
       JSON.stringify({
         data,
+        fileData,
+        type: 'sign',
       }),
     );
   };
@@ -55,7 +57,6 @@ export const SelectRecipient = () => {
     window.Telegram.WebApp.MainButton.onClick(handleSend);
     // Инициализируем WebApp при монтировании компонента
     window.Telegram.WebApp.ready();
-    window.Telegram.WebApp.expand();
   }, []);
 
   useEffect(() => {

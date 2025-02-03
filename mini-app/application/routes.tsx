@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 
-import { NotFoundScreen, SelectRecipient } from '@example/screens';
+import { NotFoundScreen, SelectRecipient, Sign } from '@example/screens';
 
 export const routes: RouteObject[] = [
   {
@@ -15,6 +15,20 @@ export const routes: RouteObject[] = [
       {
         index: true,
         element: <SelectRecipient />,
+      },
+    ],
+  },
+  {
+    path: '/sign',
+    element: <Outlet />,
+    children: [
+      {
+        path: '*',
+        element: <NotFoundScreen />,
+      },
+      {
+        index: true,
+        element: <Sign />,
       },
     ],
   },

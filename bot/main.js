@@ -62,6 +62,8 @@ bot.on('document', async (ctx) => {
     const fileData = {
       fileUrl,
       fileName: ctx.message.document.file_name,
+      messageId: ctx.message.message_id,
+      chatId: ctx.chat.id,
     };
 
     const data = await fs.readFile(filePath, 'utf8');
@@ -85,6 +87,9 @@ bot.on('document', async (ctx) => {
               },
             ],
           ],
+          resize_keyboard: true,
+          one_time_keyboard: true,
+          input_field_placeholder: 'Нажмите кнопку "Подписать"',
         },
       },
     );
@@ -96,25 +101,83 @@ bot.on('document', async (ctx) => {
 
 // Обработка данных от веб-приложения
 bot.on('web_app_data', async (ctx) => {
-  const userId = JSON.parse(ctx.message.web_app_data.data).data.id;
+  if (JSON.parse(ctx.message.web_app_data.data).type === 'sign') {
+    const { id: userId } = JSON.parse(ctx.message.web_app_data.data).data;
+    const { messageId, chatId } = JSON.parse(
+      ctx.message.web_app_data.data,
+    ).fileData;
 
-  console.log('Получены данные от веб-приложения:', ctx.message.web_app_data);
+    console.log('Получены данные от веб-приложения:', ctx.message.web_app_data);
 
-  try {
-    const data = await fs.readFile(filePath, 'utf8');
-    const users = JSON.parse(data);
+    try {
+      const data = await fs.readFile(filePath, 'utf8');
+      const users = JSON.parse(data);
 
-    // Находим получателя по ID
-    const recipient = users.find((user) => user.id === Number(userId));
+      const recipient = users.find((user) => user.id === Number(userId));
 
-    if (recipient) {
-      await ctx.reply(
-        `Файл отправлен "${recipient.first_name} ${recipient.last_name}" на подписание. Ожидайте`,
-      );
+      if (recipient) {
+        // Отправляем сообщение отправителю
+        await ctx.reply(
+          `Файл отправлен "${recipient.first_name} ${recipient.last_name}" на подписание. Ожидайте`,
+        );
+
+        const encodedData = encodeURIComponent(
+          JSON.stringify({
+            fileData: JSON.parse(ctx.message.web_app_data.data).fileData,
+            user: ctx.from,
+          }),
+        );
+
+        // Пересылаем файл получателю
+        await ctx.telegram.forwardMessage(recipient.id, chatId, messageId);
+
+        // Отправляем сообщение с кнопкой подписания
+        await ctx.telegram.sendMessage(
+          recipient.id,
+          `Пользователь ${ctx.from.first_name} ${
+            ctx.from.last_name || ''
+          } отправил вам файл на подписание. Ознакомьтесь с файлом и нажмите кнопку "Подписать"`,
+          {
+            reply_markup: {
+              keyboard: [
+                [
+                  {
+                    text: 'Подписать',
+                    web_app: {
+                      url: `https://n1spspg8-3000.euw.devtunnels.ms/sign?data=${encodedData}`,
+                    },
+                  },
+                ],
+              ],
+              resize_keyboard: true,
+              one_time_keyboard: true,
+              input_field_placeholder: 'Нажмите кнопку "Подписать"',
+            },
+          },
+        );
+      }
+    } catch (error) {
+      console.error('Ошибка при обработке данных:', error);
+      ctx.reply('Произошла ошибка при обработке данных');
     }
-  } catch (error) {
-    console.error('Ошибка при обработке данных:', error);
-    ctx.reply('Произошла ошибка при обработке данных');
+  }
+
+  if (JSON.parse(ctx.message.web_app_data.data).type !== 'sign') {
+    const { data } = JSON.parse(ctx.message.web_app_data.data);
+
+    console.log('Получены данные от веб-приложения sign:', data);
+
+    const { messageId, chatId } = data.fileData;
+    const { id: recipientId } = data.user;
+
+    await ctx.telegram.forwardMessage(recipientId, chatId, messageId);
+
+    await ctx.telegram.sendMessage(
+      recipientId,
+      `Пользователь ${ctx.from.first_name} ${
+        ctx.from.last_name || ''
+      } подписал файл`,
+    );
   }
 });
 
