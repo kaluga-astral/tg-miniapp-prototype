@@ -14,7 +14,8 @@ declare global {
   }
 }
 
-const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.hash.split('?')[1]);
+
 const {
   users,
   fileData,

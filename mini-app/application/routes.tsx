@@ -32,4 +32,18 @@ export const routes: RouteObject[] = [
       },
     ],
   },
+  {
+    path: '/test',
+    element: <Outlet />,
+    children: [
+      {
+        path: '*',
+        element: <NotFoundScreen />,
+      },
+      {
+        index: true,
+        element: <div>root</div>,
+      },
+    ],
+  },
 ];
