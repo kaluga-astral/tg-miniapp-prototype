@@ -82,7 +82,7 @@ bot.on('document', async (ctx) => {
               {
                 text: 'Выбрать получателя',
                 web_app: {
-                  url: `https://n1spspg8-3000.euw.devtunnels.ms/select?data=${encodedData}`,
+                  url: `https://kaluga-astral.github.io/tg-miniapp-prototype/#/select?data=${encodedData}`,
                 },
               },
             ],
@@ -144,7 +144,7 @@ bot.on('web_app_data', async (ctx) => {
                   {
                     text: 'Подписать',
                     web_app: {
-                      url: `https://n1spspg8-3000.euw.devtunnels.ms/sign?data=${encodedData}`,
+                      url: `https://kaluga-astral.github.io/tg-miniapp-prototype/#/sign?data=${encodedData}`,
                     },
                   },
                 ],
