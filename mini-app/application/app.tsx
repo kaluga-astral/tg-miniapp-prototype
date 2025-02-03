@@ -2,12 +2,9 @@ import {
   enableStaticRendering as enableMobxStaticRendering,
   observer,
 } from 'mobx-react-lite';
-import { useRoutes } from 'react-router-dom';
 
 import {
   ConfigProvider,
-  NotificationContainer,
-  RouterServiceAdapter,
   ThemeProvider,
   configService,
   initApiHttpClient,
@@ -18,7 +15,9 @@ import {
   theme,
 } from '@example/shared';
 
-import { routes } from './routes';
+import { SelectRecipient, Sign } from '../screens';
+
+const params = new URLSearchParams(window.location.hash.split('?')[1]);
 
 configService.init({
   apiUrl: window.__ENV__.PUBLIC_API_URL,
@@ -31,8 +30,6 @@ initApiHttpClient();
 enableMobxStaticRendering(typeof window === 'undefined');
 
 export const App = observer(() => {
-  const renderRoutes = useRoutes(routes);
-
   return (
     <ConfigProvider
       imagesMap={{
@@ -42,10 +39,8 @@ export const App = observer(() => {
       }}
       captureException={monitoringErrorService.captureException}
     >
-      <RouterServiceAdapter />
       <ThemeProvider theme={theme}>
-        <NotificationContainer />
-        {renderRoutes}
+        {params.get('type') === 'select' ? <SelectRecipient /> : <Sign />}
       </ThemeProvider>
     </ConfigProvider>
   );
