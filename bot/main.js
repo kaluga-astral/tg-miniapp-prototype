@@ -82,7 +82,7 @@ bot.on('document', async (ctx) => {
               {
                 text: 'Выбрать получателя',
                 web_app: {
-                  url: `https://kaluga-astral.github.io/tg-miniapp-prototype/#/select?data=${encodedData}`,
+                  url: `https://kaluga-astral.github.io/tg-miniapp-prototype?data=${encodedData}&type="select"`,
                 },
               },
             ],
@@ -144,7 +144,7 @@ bot.on('web_app_data', async (ctx) => {
                   {
                     text: 'Подписать',
                     web_app: {
-                      url: `https://kaluga-astral.github.io/tg-miniapp-prototype/#/sign?data=${encodedData}`,
+                      url: `https://kaluga-astral.github.io/tg-miniapp-prototype?data=${encodedData}&type="sign"`,
                     },
                   },
                 ],
