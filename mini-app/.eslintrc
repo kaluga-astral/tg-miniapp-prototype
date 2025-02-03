@@ -1,0 +1,101 @@
+{
+  "extends": ["@astral/eslint-config-react-ts", "plugin:mobx/recommended"],
+  "plugins": ["mobx"],
+  "rules": {
+    "mobx/missing-observer": "off",
+    "import/order": [
+      "error",
+      {
+        "pathGroups": [
+          {
+            "pattern": "@example/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ],
+        "newlines-between": "always",
+        "pathGroupsExcludedImportTypes": [
+          "internal"
+        ],
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "object",
+          "index"
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    // Ниже определены правила, которые устанавливают архитектурные границы (запрещают импорты из директорий)
+    {
+      "files": "shared/**/*.+(ts|tsx)",
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@example/data", "@example/modules", "@example/screens"],
+                "message": "Shared не должен зависеть от: data, modules, screens"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": "pages/**/*.+(ts|tsx)",
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@example/data", "@example/modules"],
+                "message": "Pages не зависит от: data и modules"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": "+(modules|screens|pages)/**/*.+(ts|tsx)",
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@astral", "@mui", "lodash-es"],
+                "message": "Зависимость должна быть инвертирована через shared"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    // разрешаем импорт из других модулей только через external.ts файлы
+    {
+      "files": "modules/**/*.+(ts|tsx)",
+      "excludedFiles": ["modules/**/external.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@example/modules"],
+                "message": "Импорты из других модулей должны проходить через external.ts"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
