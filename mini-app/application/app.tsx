@@ -17,7 +17,7 @@ import {
 
 import { SelectRecipient, Sign } from '../screens';
 
-const params = new URLSearchParams(window.location.hash.split('?')[1]);
+const params = new URLSearchParams(window.location.search);
 
 configService.init({
   apiUrl: window.__ENV__.PUBLIC_API_URL,
